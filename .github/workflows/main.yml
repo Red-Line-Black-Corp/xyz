@@ -1,0 +1,75 @@
+name: Device Adaptive Node & QR Assignment
+
+on:
+  workflow_dispatch:
+    inputs:
+      device_id:
+        description: "Registered device identifier"
+        required: true
+        type: string
+      latitude:
+        description: "Latitude in decimal degrees"
+        required: true
+        type: string
+      longitude:
+        description: "Longitude in decimal degrees"
+        required: true
+        type: string
+      elevation:
+        description: "Elevation value at origin"
+        required: true
+        type: string
+      elevation_unit:
+        description: "Unit of elevation origin (m or ft)"
+        required: true
+        default: "m"
+        type: choice
+        options:
+          - m
+          - ft
+      service_code:
+        description: "Service code for this device"
+        required: true
+        type: string
+      owner_mark:
+        description: "Owner mark / trademark label"
+        required: false
+        default: "FELLOWSTAR | REBEL STAR"
+        type: string
+
+jobs:
+  assign-device-node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install qrcode[pil]
+
+      - name: Run device node & QR assignment
+        env:
+          INPUT_DEVICE_ID: ${{ github.event.inputs.device_id }}
+          INPUT_LATITUDE: ${{ github.event.inputs.latitude }}
+          INPUT_LONGITUDE: ${{ github.event.inputs.longitude }}
+          INPUT_ELEVATION: ${{ github.event.inputs.elevation }}
+          INPUT_ELEVATION_UNIT: ${{ github.event.inputs.elevation_unit }}
+          INPUT_SERVICE_CODE: ${{ github.event.inputs.service_code }}
+          INPUT_OWNER_MARK: ${{ github.event.inputs.owner_mark }}
+        run: |
+          python tools/device_node_assignment.py \
+            --device-id "$INPUT_DEVICE_ID" \
+            --lat "$INPUT_LATITUDE" \
+            --lon "$INPUT_LONGITUDE" \
+            --elev "$INPUT_ELEVATION" \
+            --elev-unit "$INPUT_ELEVATION_UNIT" \
+            --service-code "$INPUT_SERVICE_CODE" \
+            --owner-mark "$INPUT_OWNER_MARK"
