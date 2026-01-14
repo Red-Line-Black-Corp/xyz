@@ -1,0 +1,71 @@
+# Security & Safety Checklist — Biomechanical Craft
+
+This checklist summarizes practical hardening and operational controls. Use it as a base for policy documents, procurement, and implementation.
+
+1. Threat Model & Principles
+- Define assets: control channels, capsule/mesh servers, actuation modules, firmware, neural input streams, telemetry, charging systems.
+- Apply least privilege, defense-in-depth, strong identity, and secure supply chain practices.
+
+2. Identity & Authentication
+- Per-device hardware root-of-trust (TPM / secure element).
+- Mutual TLS with client certs for all mesh/capsule server connections.
+- Per-device keys provisioned securely at manufacture or during trusted enrollment.
+- Use short-lived credentials and automated rotation.
+
+3. Firmware & Boot
+- Secure Boot + measured boot that records boot measurements.
+- Enforce signed firmware images with verified signatures before activation.
+- Rollback protection and reproducible signing pipeline.
+
+4. Command & Actuation Controls
+- Require cryptographic command signing for all actuation (attach/detach, unions).
+- Commands include sequence numbers, nonces, and expiry timestamps.
+- Implement replay protection and strict sequence enforcement.
+- For high-risk commands require multi-authority approval (M-of-N signing) and human-in-the-loop confirmation at the actuator.
+
+5. Neural Input Handling
+- Treat raw neural streams as untrusted inputs.
+- Add an intent-inference layer that outputs bounded, rate-limited control primitives.
+- Enforce validation, smoothing, anomaly detection, and human confirmation for critical state changes.
+- Log all neural-derived decisions (with hashes for tamper-evidence).
+
+6. Charging & Power Safety
+- Redundant hardware charge controllers with independent thermal and voltage watchdogs.
+- Enforce maximum State-of-Charge (SoC) floors/ceilings for operational modes.
+- Require signed charge-authorize messages and fail-safe to grounded/disconnected state on anomalies.
+
+7. Network Segmentation & Hardening
+- Separate networks: management, control, telemetry, developer.
+- Restrict remote access behind bastion hosts and zero-trust overlays.
+- Deploy per-subnet firewall policies and service-level allowlists.
+
+8. Monitoring, Detection & Response
+- Telemetry-based health checks for motors, battery, sensors, and neural input channels.
+- Rate-limit command ingestion; raise alarm on bursts or abnormal command sequences.
+- Tamper-evident logging (e.g., append-only logs with chained hashes).
+- Maintain an incident playbook and means to place craft into "limp" safe-mode remotely.
+
+9. Physical & Mechanical Safeguards
+- Mechanical interlocks for any detach/attach mechanism.
+- Multi-factor physical release (two-person rule or mechanical override that requires verification).
+- Local cutoff switches independent of software.
+
+10. Supply Chain & Build
+- Signed SBOM for all components, secure procurement, provenance checks.
+- Reproducible builds and CI that signs artifacts with organizational keys.
+
+11. Testing & Digital Twin
+- Maintain a digital twin environment for validating updates before deployment.
+- Staged deployment: dev -> test (digital twin) -> shadow (limited hardware) -> full deploy.
+
+12. Operational Governance
+- Role-based access with least-privilege for ops and engineers.
+- Periodic key rotation, audit, and red-team testing.
+- Privacy policy for neural data; default to minimal retention and encrypted storage.
+
+Appendix — Implementation notes
+- Use hardware-backed signing (HSM/TPM, KMS) for keys; do not store private keys on developer laptops.
+- Design the "limp mode" as minimal dependencies: power down actuators, enable brakes/locks, preserve comms for recovery.
+- For any critical actuator, require both software authorization and a secondary hardwired physical safety check.
+
+This checklist is intentionally concise; expand each item into operational procedures, implementation specs, and test cases for your environment.
