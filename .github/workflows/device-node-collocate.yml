@@ -73,3 +73,9 @@ jobs:
             --elev-unit "$INPUT_ELEVATION_UNIT" \
             --service-code "$INPUT_SERVICE_CODE" \
             --owner-mark "$INPUT_OWNER_MARK"
+            - name: Upload device identity bundle
+            
+      uses: actions/upload-artifact@v4
+      with:
+        name: device-${{ inputs.device_id }}-identity
+        path: artifacts/
