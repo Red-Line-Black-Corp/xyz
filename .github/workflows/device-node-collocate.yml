@@ -79,3 +79,14 @@ jobs:
       with:
         name: device-${{ inputs.device_id }}-identity
         path: artifacts/
+
+        - name: Write witness log
+      run: |
+        mkdir -p artifacts/witness
+        echo "device_id=${{ inputs.device_id }}" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "service_code=${{ inputs.service_code }}" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "latitude=${{ inputs.latitude }}" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "longitude=${{ inputs.longitude }}" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "elevation=${{ inputs.elevation }}${{ inputs.elevation_unit }}" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> artifacts/witness/log_${{ inputs.device_id }}.txt
+        echo "---" >> artifacts/witness/log_${{ inputs.device_id }}.txt
