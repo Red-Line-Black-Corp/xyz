@@ -1,3 +1,12 @@
+python tools/device_node_assignment.py \
+  --device-id "$INPUT_DEVICE_ID" \
+  --lat "$INPUT_LATITUDE" \
+  --lon "$INPUT_LONGITUDE" \
+  --elev "$INPUT_ELEVATION" \
+  --elev-unit "$INPUT_ELEVATION_UNIT" \
+  --service-code "$INPUT_SERVICE_CODE" \
+  --owner-mark "$INPUT_OWNER_MARK"
+
 #!/usr/bin/env python3
 import argparse
 import json
@@ -163,3 +172,4 @@ class GeoPoint:
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           if __name__ == "__main__":
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               main()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
