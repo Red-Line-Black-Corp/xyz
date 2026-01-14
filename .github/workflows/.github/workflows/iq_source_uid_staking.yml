@@ -1,0 +1,59 @@
+name: IQ‑Source UID Staking
+
+on:
+  workflow_dispatch:
+    inputs:
+      uid:
+        description: "IQ‑Source unique identifier"
+        required: true
+        type: string
+      stake_value:
+        description: "Staking value for this UID"
+        required: true
+        type: string
+      stake_unit:
+        description: "Unit of staking value"
+        required: true
+        default: "IQ"
+        type: string
+      registrar:
+        description: "Registrar or assigning authority"
+        required: true
+        type: string
+      witness_mark:
+        description: "Witness or symbolic mark"
+        required: false
+        default: "FELLOWSTAR | REBEL STAR"
+        type: string
+
+jobs:
+  stake-iq-source-uid:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Run IQ‑Source UID staking
+        env:
+          INPUT_UID: ${{ github.event.inputs.uid }}
+          INPUT_STAKE_VALUE: ${{ github.event.inputs.stake_value }}
+          INPUT_STAKE_UNIT: ${{ github.event.inputs.stake_unit }}
+          INPUT_REGISTRAR: ${{ github.event.inputs.registrar }}
+          INPUT_WITNESS_MARK: ${{ github.event.inputs.witness_mark }}
+        run: |
+          python tools/iq_source_stake.py \
+            --uid "$INPUT_UID" \
+            --value "$INPUT_STAKE_VALUE" \
+            --unit "$INPUT_STAKE_UNIT" \
+            --registrar "$INPUT_REGISTRAR" \
+            --witness "$INPUT_WITNESS_MARK"
