@@ -74,6 +74,15 @@ jobs:
             --service-code "$INPUT_SERVICE_CODE" \
             --owner-mark "$INPUT_OWNER_MARK"
             - name: Upload device identity bundle
+
+- name: Commit device artifacts back to repo
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+
+        git add artifacts/
+        git commit -m "Register device ${{ inputs.device_id }} | $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+        git push
             
       uses: actions/upload-artifact@v4
       with:
