@@ -1,0 +1,51 @@
+name: Device Adaptive Node & QR Assignment
+
+on:
+  workflow_dispatch:
+    inputs:
+      device_id:
+        description: "Device ID to register"
+        required: true
+        type: string
+
+jobs:
+  build-capsule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install qrcode pillow cryptography
+
+      - name: Run device assignment script
+        env:
+          DEVICE_ID: ${{ github.event.inputs.device_id }}
+        run: |
+          python tools/device_node_assignment.py "$DEVICE_ID"
+
+      - name: Prepare artifact folders
+        run: |
+          mkdir -p artifacts
+          mkdir -p signatures
+          cp -r output/identity/* artifacts/ || true
+          cp -r output/signatures/* signatures/ || true
+
+      - name: Upload identity artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-${{ github.event.inputs.device_id }}-identity
+          path: artifacts/
+
+      - name: Upload signature artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-${{ github.event.inputs.device_id }}-signatures
+          path: signatures/
