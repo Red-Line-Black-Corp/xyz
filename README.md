@@ -3,7 +3,7 @@ Adaptive‑Node Assignment & QR Identity System
 
 Repository: Red‑Line Black Corp / xyz
 
-This repository implements the Device Adaptive‑Node Assignment System, a geospatial identity engine that assigns deterministic node‑cell identifiers to registered devices, generates QR codes, and produces identity bundles for downstream routing, inspection, and service‑code validation.
+This repository implements the Device Adaptive‑Node Assignment System, a geospatial identity engine that assigns deterministic/L node‑cell identifiers to registered devices, generates QR codes, and produces identity bundles for downstream routing, inspection, and service‑code validation.
 
 The system is powered by GitHub Actions, Python, and a deterministic geospatial quantization model.
 
